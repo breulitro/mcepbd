@@ -22,7 +22,7 @@ drop table if exists Funcionarios;
 --nro_matricula INTEGER(4) PRIMARY KEY NOT NULL AUTOINCREMENT,
 --MySQL
 -- eh o que ta sendo usado, mas eh tao tosco que nao aceita comentario no meio
---do create table...
+--do create table... t~ao tosco quanto as configs do meu teclado :¬)
 CREATE TABLE Funcionarios (
 nro_matricula INTEGER(4) PRIMARY KEY NOT NULL AUTO_INCREMENT,
 nome VARCHAR(80) NOT NULL,
@@ -34,7 +34,8 @@ cpf VARCHAR(12) NOT NULL
 );
 
 insert into Funcionarios (nome, data_admissao, email, ramal, salario, cpf)
-values	("Roberval", "1979-02-23", "rober@val.com", 3422, 379.27, "987234756-13"),
+values	("Percival", "1956-04-01", "perci@val.com", 5467, 634.33, "132414234-33"),
+		("Roberval", "1979-02-23", "rober@val.com", 3422, 379.27, "987234756-13"),
 		("Pafuncio", "1978-04-28", "pafun@cio.com", 3123, 279.27, "987234756-12");
 
 ---------------------------------------------------------------------------------
@@ -47,7 +48,9 @@ capacidade INTEGER(4)
 );
 
 insert into Setor (email, ramal, nome, capacidade)
-values ("bla@ga.csd", 5432, "Cama Mesa e Banho", 6543);
+values	("in@fan.~", 1234, "Infantil", 3421),
+		("moveis@loja.com", 3453, "Moveis", 353),
+		("cama@mesa.banho", 5432, "Cama Mesa e Banho", 6543);
 
 ---------------------------------------------------------------------------------
 CREATE TABLE Produto (
@@ -57,7 +60,10 @@ preco NUMERIC(15,2) NOT NULL
 );
 
 insert into Produto (descricao, preco)
-values ("Travesseiro", 12.99);
+values	("Calcinha", 11.32),
+		("Cama", 123.54),
+		("Roupeiro", 543.23),
+		("Travesseiro", 12.99);
 
 ---------------------------------------------------------------------------------
 CREATE TABLE GerentesSetor (
@@ -68,9 +74,11 @@ celular INTEGER(14),
 FOREIGN KEY(nro_matricula) REFERENCES Funcionarios (nro_matricula),
 FOREIGN KEY(cod_setor) REFERENCES Setor (cod_setor)
 );
-
+--ALTER TABLE GerentesSetor AUTO_INCREMENT = 1000;
 insert into GerentesSetor (nro_matricula, cod_setor, celular)
-values (1, 1, 94572289);
+values	(3, 3, 67474356),
+		(2, 2, 98712322),
+		(1, 1, 94572289);
 
 ---------------------------------------------------------------------------------
 CREATE TABLE Lojas (
@@ -81,7 +89,9 @@ email VARCHAR(80)
 );
 
 insert into Lojas (endereco, telefone, email)
-values ("Rua Paranguape 1234", 32255896, "filial@paranguape.br");
+values	("Avenida Passo Manco 171", 32552345, "filial@manca.br"),
+		("Travessa Paralela 1313", 32423243, "filial@travessa.br"),
+		("Rua Paranguape 1234", 32255896, "filial@paranguape.br");
 
 ---------------------------------------------------------------------------------
 CREATE TABLE ProdutosLoja (
@@ -96,7 +106,12 @@ FOREIGN KEY(cod_filial) REFERENCES Lojas (cod_filial)
 );
 
 insert into ProdutosLoja (cod_filial, cod_produto, minimo, maximo, quantidade)
-values (1, 1, 10, 100, 22);
+values  (3, 1, 20, 200, 140),
+		(2, 3, 4, 10, 6),
+		(2, 2, 2, 6, 4),
+		(1, 4, 10, 30, 22),
+		(1, 2, 2, 10, 6),
+		(1, 1, 10, 100, 22);
 
 ---------------------------------------------------------------------------------
 CREATE TABLE SetorProduto (
@@ -109,7 +124,10 @@ FOREIGN KEY(cod_produto) REFERENCES Produto (cod_produto)
 );
 
 insert into SetorProduto (cod_setor, cod_produto, quantidade)
-values (1, 1, 12);
+values	(3, 2, 32),
+		(3, 4, 64),
+		(2, 3, 30),
+		(1, 1, 500);
 
 ---------------------------------------------------------------------------------
 CREATE TABLE ItemPedido (
@@ -164,3 +182,5 @@ FOREIGN KEY(cod_pedido) REFERENCES PedidoLoja (cod_pedido)
 
 insert into Aprovacoes (cod_gerente, cod_pedido, data)
 values (1, 1, "2012-04-01");
+--se quiser alterar o valor inicial na tabela GerentesSetor
+--values (1000, 1, "2012-04-01");
