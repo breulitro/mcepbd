@@ -1,4 +1,3 @@
--- drops de menta
 drop table if exists Aprovacoes;
 drop table if exists PedidoLoja;
 drop table if exists GerentesLoja;
