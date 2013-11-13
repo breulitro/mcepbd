@@ -1,0 +1,303 @@
+begin
+   execute immediate 'drop table Aprovacoes';
+exception
+   when others then null;
+end;
+/
+begin
+   execute immediate 'drop table PedidoLoja';
+exception
+   when others then null;
+end;
+/
+begin
+   execute immediate 'drop table GerentesLoja';
+exception
+   when others then null;
+end;
+/
+begin
+   execute immediate 'drop table ItemPedido';
+exception
+   when others then null;
+end;
+/
+begin
+   execute immediate 'drop table SetorProduto';
+exception
+   when others then null;
+end;
+/
+begin
+   execute immediate 'drop table ProdutosLoja';
+exception
+   when others then null;
+end;
+/
+begin
+   execute immediate 'drop table Lojas';
+exception
+   when others then null;
+end;
+/
+begin
+   execute immediate 'drop table GerentesSetor';
+exception
+   when others then null;
+end;
+/
+begin
+   execute immediate 'drop table Produto';
+exception
+   when others then null;
+end;
+/
+begin
+   execute immediate 'drop table Setor';
+exception
+   when others then null;
+end;
+/
+begin
+   execute immediate 'drop table Funcionarios';
+exception
+   when others then null;
+end;
+/
+
+CREATE TABLE Funcionarios (
+nro_matricula NUMBER(10) PRIMARY KEY NOT NULL,
+nome VARCHAR2(80) NOT NULL,
+data_admissao Date NOT NULL,
+email VARCHAR2(80),
+ramal NUMBER(10),
+salario NUMBER(15,2) NOT NULL,
+cpf VARCHAR2(12) NOT NULL UNIQUE
+);
+
+-- Generate ID using sequence and trigger
+CREATE SEQUENCE Funcionarios_seq START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER Funcionarios_seq_tr
+ BEFORE INSERT ON Funcionarios FOR EACH ROW
+ WHEN (NEW.nro_matricula IS NULL)
+BEGIN
+ SELECT Funcionarios_seq.NEXTVAL INTO :NEW.nro_matricula FROM DUAL;
+END;
+/
+
+insert into Funcionarios (nome, data_admissao, email, ramal, salario, cpf)
+	 select "Percival", "1956-04-01", "perci@val.com", 5467, 634.33, "132414234-33" from dual union all 
+		 select "Roberval", "1979-02-23", "rober@val.com", 3422, 379.27, "987234756-13" from dual union all 
+		 select "Pafuncio", "1978-04-28", "pafun@cio.com", 3123, 279.27, "987234756-12" from dual union all 
+		 select "Bartholomeo", "1928-11-23", "bar@tho.lomeo", 2312, 1980.00, "123443223-12" from dual union all 
+		 select "Geraldison", "1976-02-29", "ger@ldis.on", 1231, 459.29, "623434534-34" from dual union all 
+		 select "Geraldaughter", "1976-02-29", "gerald@ugh.ter", 1232, 459.28, "623434534-35" from dual;
+
+CREATE TABLE Setor (
+cod_setor NUMBER(10) PRIMARY KEY NOT NULL,
+email VARCHAR2(80),
+ramal NUMBER(10),
+nome VARCHAR2(80) NOT NULL,
+capacidade NUMBER(10)
+);
+
+-- Generate ID using sequence and trigger
+CREATE SEQUENCE Setor_seq START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER Setor_seq_tr
+ BEFORE INSERT ON Setor FOR EACH ROW
+ WHEN (NEW.cod_setor IS NULL)
+BEGIN
+ SELECT Setor_seq.NEXTVAL INTO :NEW.cod_setor FROM DUAL;
+END;
+/
+
+insert into Setor (email, ramal, nome, capacidade)
+	 select "in@fan.~", 1234, "Infantil", 3421 from dual union all 
+		 select "moveis@loja.com", 3453, "Moveis", 353 from dual union all 
+		 select "cama@mesa.banho", 5432, "Cama Mesa e Banho", 6543 from dual;
+
+CREATE TABLE Produto (
+cod_produto NUMBER(10) PRIMARY KEY NOT NULL,
+descricao VARCHAR2(100) NOT NULL,
+preco NUMBER(15,2) NOT NULL
+);
+
+-- Generate ID using sequence and trigger
+CREATE SEQUENCE Produto_seq START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER Produto_seq_tr
+ BEFORE INSERT ON Produto FOR EACH ROW
+ WHEN (NEW.cod_produto IS NULL)
+BEGIN
+ SELECT Produto_seq.NEXTVAL INTO :NEW.cod_produto FROM DUAL;
+END;
+/
+
+insert into Produto (descricao, preco)
+	 select "Calcinha", 11.32 from dual union all 
+		 select "Cama", 123.54 from dual union all 
+		 select "Roupeiro", 543.23 from dual union all 
+		 select "Travesseiro", 12.99 from dual;
+
+CREATE TABLE GerentesSetor (
+cod_gerente NUMBER(10) PRIMARY KEY NOT NULL,
+nro_matricula NUMBER(10) NOT NULL,
+cod_setor NUMBER(10) NOT NULL,
+celular NUMBER(10),
+FOREIGN KEY(nro_matricula) REFERENCES Funcionarios (nro_matricula),
+FOREIGN KEY(cod_setor) REFERENCES Setor (cod_setor)
+);
+
+-- Generate ID using sequence and trigger
+CREATE SEQUENCE GerentesSetor_seq START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER GerentesSetor_seq_tr
+ BEFORE INSERT ON GerentesSetor FOR EACH ROW
+ WHEN (NEW.cod_gerente IS NULL)
+BEGIN
+ SELECT GerentesSetor_seq.NEXTVAL INTO :NEW.cod_gerente FROM DUAL;
+END;
+/
+insert into GerentesSetor (nro_matricula, cod_setor, celular)
+	 select 3, 3, 67474356 from dual union all 
+		 select 2, 2, 98712322 from dual union all 
+		 select 1, 1, 94572289 from dual;
+
+CREATE TABLE Lojas (
+cod_filial NUMBER(10) PRIMARY KEY NOT NULL,
+endereco VARCHAR2(100) NOT NULL,
+telefone NUMBER(10),
+email VARCHAR2(80)
+);
+
+-- Generate ID using sequence and trigger
+CREATE SEQUENCE Lojas_seq START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER Lojas_seq_tr
+ BEFORE INSERT ON Lojas FOR EACH ROW
+ WHEN (NEW.cod_filial IS NULL)
+BEGIN
+ SELECT Lojas_seq.NEXTVAL INTO :NEW.cod_filial FROM DUAL;
+END;
+/
+
+insert into Lojas (endereco, telefone, email)
+	 select "Avenida Passo Manco 171", 32552345, "filial@manca.br" from dual union all 
+		 select "Travessa Paralela 1313", 32423243, "filial@travessa.br" from dual union all 
+		 select "Rua Paranguape 1234", 32255896, "filial@paranguape.br" from dual;
+
+CREATE TABLE ProdutosLoja (
+cod_filial NUMBER(10) NOT NULL,
+cod_produto NUMBER(10) NOT NULL,
+minimo NUMBER(10) NOT NULL,
+maximo NUMBER(10) NOT NULL,
+quantidade NUMBER(10) NOT NULL,
+PRIMARY KEY(cod_filial, cod_produto),
+FOREIGN KEY(cod_produto) REFERENCES Produto (cod_produto),
+FOREIGN KEY(cod_filial) REFERENCES Lojas (cod_filial)
+);
+
+insert into ProdutosLoja (cod_filial, cod_produto, minimo, maximo, quantidade)
+   select 3, 1, 20, 200, 140 from dual union all 
+		 select 2, 3, 4, 10, 6 from dual union all 
+		 select 2, 2, 2, 6, 4 from dual union all 
+		 select 1, 4, 10, 30, 22 from dual union all 
+		 select 1, 2, 2, 10, 6 from dual union all 
+		 select 1, 1, 10, 100, 22 from dual;
+
+CREATE TABLE SetorProduto (
+cod_setor NUMBER(10) NOT NULL,
+cod_produto NUMBER(10) NOT NULL,
+quantidade NUMBER(10) NOT NULL,
+PRIMARY KEY(cod_setor,cod_produto),
+FOREIGN KEY(cod_setor) REFERENCES Setor (cod_setor),
+FOREIGN KEY(cod_produto) REFERENCES Produto (cod_produto)
+);
+
+insert into SetorProduto (cod_setor, cod_produto, quantidade)
+	 select 3, 2, 32 from dual union all 
+		 select 3, 4, 64 from dual union all 
+		 select 2, 3, 30 from dual union all 
+		 select 1, 1, 500 from dual;
+
+CREATE TABLE GerentesLoja (
+cod_gerente NUMBER(10) PRIMARY KEY NOT NULL,
+nro_matricula NUMBER(10) NOT NULL,
+cod_filial NUMBER(10) NOT NULL,
+meta_mensal NUMBER(15,2) NOT NULL,
+FOREIGN KEY(nro_matricula) REFERENCES Funcionarios (nro_matricula),
+FOREIGN KEY(cod_filial) REFERENCES Lojas (cod_filial)
+);
+
+-- Generate ID using sequence and trigger
+CREATE SEQUENCE GerentesLoja_seq START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER GerentesLoja_seq_tr
+ BEFORE INSERT ON GerentesLoja FOR EACH ROW
+ WHEN (NEW.cod_gerente IS NULL)
+BEGIN
+ SELECT GerentesLoja_seq.NEXTVAL INTO :NEW.cod_gerente FROM DUAL;
+END;
+/
+
+insert into GerentesLoja (nro_matricula, cod_filial, meta_mensal)
+	 select 4, 1, 1000.00 from dual union all 
+		 select 5, 2, 2000.00 from dual union all 
+		 select 6, 3, 3000.00 from dual;
+
+
+CREATE TABLE PedidoLoja (
+cod_pedido NUMBER(10) PRIMARY KEY NOT NULL,
+cod_gerente NUMBER(10) NOT NULL,
+urgente char(1) DEFAULT 'n',
+data Date NOT NULL,
+FOREIGN KEY(cod_gerente) REFERENCES GerentesLoja (cod_gerente)
+);
+
+-- Generate ID using sequence and trigger
+CREATE SEQUENCE PedidoLoja_seq START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER PedidoLoja_seq_tr
+ BEFORE INSERT ON PedidoLoja FOR EACH ROW
+ WHEN (NEW.cod_pedido IS NULL)
+BEGIN
+ SELECT PedidoLoja_seq.NEXTVAL INTO :NEW.cod_pedido FROM DUAL;
+END;
+/
+
+insert into PedidoLoja (cod_gerente, urgente, data)
+values (1, 'y', "2012-03-31");
+insert into PedidoLoja (cod_gerente, data)
+values (2, "2012-03-31");
+
+
+CREATE TABLE ItemPedido (
+cod_pedido NUMBER(10) NOT NULL,
+cod_produto NUMBER(10) NOT NULL,
+quantidade NUMBER(10) NOT NULL,
+PRIMARY KEY(cod_pedido, cod_produto),
+FOREIGN KEY(cod_produto) REFERENCES Produto (cod_produto),
+FOREIGN KEY(cod_pedido) REFERENCES PedidoLoja (cod_pedido)
+);
+
+insert into ItemPedido (cod_pedido, cod_produto, quantidade)
+	 select 1, 1, 20 from dual union all 
+		 select 1, 2, 3 from dual union all 
+		 select 1, 3, 6 from dual union all 
+		 select 2, 1, 12 from dual union all 
+		 select 2, 2, 4 from dual union all 
+		 select 2, 4, 9 from dual;
+
+CREATE TABLE Aprovacoes (
+cod_gerente NUMBER(10) NOT NULL,
+cod_pedido NUMBER(10) NOT NULL,
+data Date NOT NULL,
+PRIMARY KEY(cod_gerente,cod_pedido),
+FOREIGN KEY(cod_gerente) REFERENCES GerentesSetor (cod_gerente),
+FOREIGN KEY(cod_pedido) REFERENCES PedidoLoja (cod_pedido)
+);
+
+insert into Aprovacoes (cod_gerente, cod_pedido, data)
+values (1, 1, "2012-04-01");
